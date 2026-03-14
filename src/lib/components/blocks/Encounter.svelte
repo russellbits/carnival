@@ -1,6 +1,5 @@
 <script>
-  export let data = { title: '', description: '', attribute: '', stakes: '' }
-  export let attrs = { type: 'combat', difficulty: 'B' }
+  let { data = { title: '', description: '', attribute: '', stakes: '' }, attrs = { type: 'combat', difficulty: 'B' } } = $props()
 
   const typeColors = {
     combat: 'var(--color-danger)',
@@ -10,7 +9,7 @@
     discovery: 'var(--color-accent)',
     endurance: 'var(--color-danger)',
   }
-  $: borderColor = typeColors[attrs.type] ?? 'var(--color-accent)'
+  const borderColor = $derived(typeColors[attrs.type] ?? 'var(--color-accent)')
 </script>
 
 <div class="encounter encounter--{attrs.type}" style="--encounter-color: {borderColor}">

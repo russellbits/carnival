@@ -1,5 +1,5 @@
 <script>
-  export let data = { label: '', tasks: [] }
+  let { data = { label: '', tasks: [] } } = $props()
 
   const priorityColors = { A: 'var(--color-danger)', B: 'var(--color-warning)', C: 'var(--color-success)', D: 'var(--color-text-dim)', E: 'var(--color-text-dim)' }
 </script>

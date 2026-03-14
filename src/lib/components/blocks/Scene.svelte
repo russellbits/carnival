@@ -1,5 +1,5 @@
 <script>
-  export let data = { location: '', description: '', mood: 'neutral' }
+  let { data = { location: '', description: '', mood: 'neutral' } } = $props()
 </script>
 
 <div class="scene scene--{data.mood}">

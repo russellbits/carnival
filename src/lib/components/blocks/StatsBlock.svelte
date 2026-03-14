@@ -1,12 +1,12 @@
 <script>
   import { updateCharacter } from '$lib/stores/character.js'
 
-  export let data = { hp: 0, hp_max: 0, mp: 0, mp_max: 0, xp: 0, xp_next: 0, level: 1, title: '', attributes: {} }
+  let { data = { hp: 0, hp_max: 0, mp: 0, mp_max: 0, xp: 0, xp_next: 0, level: 1, title: '', attributes: {} } } = $props()
 
-  $: { updateCharacter(data) }
+  $effect(() => { updateCharacter(data) })
 
-  $: hpPct = data.hp_max > 0 ? (data.hp / data.hp_max) * 100 : 0
-  $: xpPct = data.xp_next > 0 ? ((data.xp_next - data.xp) / data.xp_next) * 100 : 0
+  const hpPct = $derived(data.hp_max > 0 ? (data.hp / data.hp_max) * 100 : 0)
+  const xpPct = $derived(data.xp_next > 0 ? ((data.xp_next - data.xp) / data.xp_next) * 100 : 0)
 </script>
 
 <div class="stats-block">

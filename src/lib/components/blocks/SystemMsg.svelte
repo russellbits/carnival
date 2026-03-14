@@ -1,5 +1,5 @@
 <script>
-  export let data = { type: 'info', message: '' }
+  let { data = { type: 'info', message: '' } } = $props()
 
   const prefixes = {
     confirm: '[OK]',
@@ -8,7 +8,7 @@
     info: '[i]',
   }
 
-  $: prefix = prefixes[data.type] ?? '[i]'
+  const prefix = $derived(prefixes[data.type] ?? '[i]')
 </script>
 
 <div class="system-msg system-msg--{data.type}">

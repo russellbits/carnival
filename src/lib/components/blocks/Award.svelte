@@ -1,5 +1,5 @@
 <script>
-  export let data = { xp: 0, attribute: '', attribute_gain: 0, gold: 0, message: '' }
+  let { data = { xp: 0, attribute: '', attribute_gain: 0, gold: 0, message: '' } } = $props()
 </script>
 
 <div class="award">

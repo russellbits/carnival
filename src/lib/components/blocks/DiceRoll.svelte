@@ -1,8 +1,8 @@
 <script>
-  export let data = { dice: '1d20', modifier: 0, result: 0, total: 0, dc: null, outcome: 'success', label: '' }
+  let { data = { dice: '1d20', modifier: 0, result: 0, total: 0, dc: null, outcome: 'success', label: '' } } = $props()
 
-  $: isCritical = data.outcome === 'critical_success' || data.outcome === 'critical_failure'
-  $: isSuccess = data.outcome === 'success' || data.outcome === 'critical_success'
+  const isCritical = $derived(data.outcome === 'critical_success' || data.outcome === 'critical_failure')
+  const isSuccess = $derived(data.outcome === 'success' || data.outcome === 'critical_success')
 </script>
 
 <div class="dice-roll dice-roll--{data.outcome}">
