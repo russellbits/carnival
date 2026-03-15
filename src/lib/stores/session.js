@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
 
 function createSession() {
-  const initial = { messages: [], initialized: false }
+  const initial = { messages: [], initialized: false, backend: 'claude' }
   const { subscribe, set, update } = writable({ ...initial })
 
   return {
@@ -11,6 +11,7 @@ function createSession() {
       messages: [...s.messages, msg]
     })),
     setInitialized: () => update(s => ({ ...s, initialized: true })),
+    setBackend: (backend) => update(s => ({ ...s, backend })),
     clear: () => set({ ...initial }),
   }
 }
