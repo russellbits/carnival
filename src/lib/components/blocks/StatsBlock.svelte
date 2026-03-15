@@ -74,12 +74,12 @@
   .bar-fill--hp { background: var(--color-danger); }
   .bar-fill--xp { background: var(--color-success); }
   .bar-val { font-size: var(--font-size-sm); color: var(--color-text-dim); min-width: 10ch; text-align: right; }
-  .attributes { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+  .attributes { display: flex; flex-wrap: wrap; justify-content: space-around; gap: var(--space-sm); }
   .attr-bubble {
     border: var(--border-width) var(--border-style) var(--border-color);
     padding: var(--space-xs) var(--space-sm);
     text-align: center;
-    min-width: 52px;
+    flex-grow: 1;
   }
   .attr-emoji { display: block; font-size: var(--font-size-base); }
   .attr-score { display: block; font-size: var(--font-size-lg); color: var(--color-accent); }

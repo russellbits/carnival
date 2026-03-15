@@ -104,8 +104,13 @@ export function createParser(onBlock) {
         const closeTag = `[/${currentTag}]`
         const closeIdx = buffer.indexOf(closeTag)
         if (closeIdx === -1) {
-          tagBody += buffer
-          buffer = ''
+          // Protect any partial close tag at the end of the buffer
+          let partial = 0
+          for (let len = Math.min(buffer.length, closeTag.length - 1); len > 0; len--) {
+            if (buffer.endsWith(closeTag.slice(0, len))) { partial = len; break }
+          }
+          tagBody += buffer.slice(0, buffer.length - partial)
+          buffer = buffer.slice(buffer.length - partial)
           break
         }
         tagBody += buffer.slice(0, closeIdx)

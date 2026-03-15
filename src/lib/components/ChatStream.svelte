@@ -1,4 +1,6 @@
 <script>
+  import { fly } from 'svelte/transition'
+  import { cubicOut } from 'svelte/easing'
   import Prose from './blocks/Prose.svelte'
   import StatsBlock from './blocks/StatsBlock.svelte'
   import TaskList from './blocks/TaskList.svelte'
@@ -26,19 +28,33 @@
     {#if block.type === 'prose'}
       <Prose text={block.text} />
     {:else if block.type === 'STATS'}
-      <StatsBlock data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <StatsBlock data={block.data} />
+      </div>
     {:else if block.type === 'TASKLIST'}
-      <TaskList data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <TaskList data={block.data} />
+      </div>
     {:else if block.type === 'ENCOUNTER'}
-      <Encounter data={block.data} attrs={block.attrs ?? {}} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <Encounter data={block.data} attrs={block.attrs ?? {}} />
+      </div>
     {:else if block.type === 'DICEROLL'}
-      <DiceRoll data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <DiceRoll data={block.data} />
+      </div>
     {:else if block.type === 'AWARD'}
-      <Award data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <Award data={block.data} />
+      </div>
     {:else if block.type === 'SCENE'}
-      <Scene data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <Scene data={block.data} />
+      </div>
     {:else if block.type === 'SYSTEM'}
-      <SystemMsg data={block.data} />
+      <div in:fly={{ x: 100, duration: 500, opacity: 0, easing: cubicOut }}>
+        <SystemMsg data={block.data} />
+      </div>
     {/if}
   {/each}
 </div>

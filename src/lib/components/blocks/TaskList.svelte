@@ -11,6 +11,7 @@
   <ol class="tasks">
     {#each data.tasks as task (task.id)}
       <li class="task" class:complete={task.complete}>
+        <span class="num">{task.id}.</span>
         <span class="priority" style="color: {priorityColors[task.priority] ?? 'inherit'}">[{task.priority}]</span>
         <span class="text">{task.text}</span>
         <span class="attr">{task.attribute}</span>
@@ -30,9 +31,10 @@
     margin-bottom: var(--space-sm);
   }
   .tasks {
-    list-style: decimal;
-    padding-left: var(--space-lg);
+    list-style: none;
+    padding-left: var(--space-sm);
   }
+  .num { min-width: 2ch; color: var(--color-text-dim); font-family: var(--font-mono); }
   .task {
     display: flex;
     gap: var(--space-sm);

@@ -1137,7 +1137,7 @@ Create `src/lib/components/blocks/StatsBlock.stories.js`:
 import StatsBlock from './StatsBlock.svelte'
 export default { title: 'Blocks/StatsBlock', component: StatsBlock }
 
-const attrs = { strength: { score: 18, emoji: '💪' }, intelligence: { score: 13, emoji: '🧠' }, wisdom: { score: 14, emoji: '🦉' }, dexterity: { score: 10, emoji: '🤹' }, constitution: { score: 12, emoji: '❤️' }, charisma: { score: 11, emoji: '🌟' } }
+const attrs = { strength: { score: 18, emoji: '🥊' }, intelligence: { score: 13, emoji: '🧠' }, wisdom: { score: 14, emoji: '🦉' }, dexterity: { score: 10, emoji: '🎯' }, constitution: { score: 12, emoji: '❤️' }, charisma: { score: 11, emoji: '🌟' } }
 
 export const FullHP = { args: { data: { hp: 14, hp_max: 14, mp: 10, mp_max: 10, xp: 1830, xp_next: 670, level: 2, title: 'Apprentice Ranger', attributes: attrs } } }
 export const LowHP = { args: { data: { hp: 3, hp_max: 14, mp: 10, mp_max: 10, xp: 1830, xp_next: 670, level: 2, title: 'Apprentice Ranger', attributes: attrs } } }

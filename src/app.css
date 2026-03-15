@@ -33,6 +33,9 @@ body::before {
 
 #svelte {
   height: 100%;
+  max-width: 830px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
+

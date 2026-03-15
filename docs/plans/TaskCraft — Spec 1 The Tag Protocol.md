@@ -78,10 +78,10 @@ Renders the HP/XP/attribute bar. Typically emitted at session start or after XP 
   "level": 2,
   "title": "Apprentice Ranger",
   "attributes": {
-    "strength":     { "score": 18, "emoji": "💪" },
+    "strength":     { "score": 18, "emoji": "🥊" },
     "intelligence": { "score": 13, "emoji": "🧠" },
     "wisdom":       { "score": 14, "emoji": "🦉" },
-    "dexterity":    { "score": 10, "emoji": "🤹" },
+    "dexterity":    { "score": 10, "emoji": "🎯" },
     "constitution": { "score": 12, "emoji": "❤️" },
     "charisma":     { "score": 11, "emoji": "🌟" }
   }

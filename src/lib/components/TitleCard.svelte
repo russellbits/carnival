@@ -1,5 +1,5 @@
 <div class="title-card">
-  <div class="title-text">CARNIVAL</div>
+  <img src="/assets/title.png" alt="Carnival" class="title-img" />
   <div class="subtitle">powered by Taskcraft</div>
 </div>
 
@@ -9,14 +9,14 @@
     border-bottom: var(--border-width) var(--border-style) var(--border-color);
     flex-shrink: 0;
   }
-  .title-text {
-    font-family: var(--font-display);
-    font-size: var(--font-size-xl);
-    color: var(--color-accent);
-    letter-spacing: 0.3em;
+  .title-img {
+    display: block;
+    max-height: 80px;
+    width: auto;
   }
   .subtitle {
     font-size: var(--font-size-sm);
     color: var(--color-text-dim);
+    margin-top: var(--space-xs);
   }
 </style>
