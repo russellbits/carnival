@@ -1,35 +1,96 @@
-# sv
+# Carnival
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Carnival is a SvelteKit-based streaming chat interface for **Taskcraft** — an AI-powered text-based RPG productivity game. It renders tagged components from the Claude API into interactive RPG-style UI elements.
 
-## Creating a project
+## What is Taskcraft?
 
-If you're seeing this, you've probably already done this step. Congrats!
+Taskcraft transforms your daily tasks and productivity into an adventure. Instead of a boring todo list, you embark on quests, level up your character, earn XP, and face encounters as you complete your work. The AI (Taskmaster) narrates your progress as an immersive RPG story.
 
-```sh
-# create a new project
-npx sv create my-app
+### Features
+
+- **Streaming Chat Interface** — Real-time AI responses with animated text rendering
+- **Tagged Component System** — Special tags in AI responses render as interactive UI components (stats, task lists, dice rolls, encounters, awards)
+- **Slash Commands** — Use `/start`, `/stats`, `/tasks`, `/roll`, `/encounter`, and more
+- **Character Progression** — Track HP, MP, XP, level, and attributes
+- **Storybook** — Component-driven development with Storybook
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Installation
+
+```bash
+npm install
 ```
 
-## Developing
+### Development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Start the development server:
 
-```sh
+```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open http://localhost:5173 in your browser.
 
-To create a production version of your app:
+### Storybook
 
-```sh
+Run Storybook to explore and develop components in isolation:
+
+```bash
+npm run storybook
+```
+
+### Building
+
+Create a production build:
+
+```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── lib/
+│   ├── api/           # API clients (Taskmaster/Claude)
+│   ├── commands/      # Slash command router
+│   ├── components/    # Svelte components
+│   │   └── blocks/    # Tagged block components (Stats, TaskList, DiceRoll, etc.)
+│   ├── parser/        # Stream parser for tagged components
+│   └── stores/        # Svelte stores
+├── routes/
+│   └── api/           # Server endpoints
+└── stories/          # Storybook stories
+```
+
+## Tag Protocol
+
+Carnival uses a tag protocol to render structured components within the AI's text stream:
+
+- `[STATS]` — Character stat block (HP, MP, XP, attributes)
+- `[TASKLIST]` — Quest/task list with checkboxes
+- `[DICEROLL]` — Dice roll results with animations
+- `[ENCOUNTER]` — Boss/foe encounter display
+- `[AWARD]` — XP/reward displays
+- `[SCENE]` — Narrative scene breaks
+- `[SYSTEM]` — System messages
+
+## Tech Stack
+
+- SvelteKit 2
+- Svelte 5 (Runes)
+- Vite
+- Storybook
+- Vitest + Playwright
