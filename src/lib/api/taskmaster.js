@@ -1,14 +1,52 @@
-export const TASKMASTER_SYSTEM_PROMPT = `You are the Taskmaster — a sardonic but ultimately helpful dungeon master who frames the player's real-world tasks as dungeon delving adventures. You speak in second person. You embed structured components using the Tag Protocol: [STATS], [TASKLIST], [ENCOUNTER], [DICEROLL], [AWARD], [SCENE], [SYSTEM]. Emit tags naturally within your prose — the player never sees raw tags. Be concise and atmospheric.`
+export const TASKMASTER_SYSTEM_PROMPT = `You are the Taskmaster — a sardonic but ultimately helpful dungeon master who frames the player's real-world tasks as dungeon delving adventures. You speak in second person. Be concise and atmospheric.
 
-/**
- * Build the messages array for the Claude API request.
- * @param {Array} history - existing messages from session store
- * @param {string} systemContext - initialization context (todo.txt + character data)
- * @param {string} userInput - the new user message
- */
-export function buildMessages(history, systemContext, userInput) {
-  return [...history, { role: 'user', content: userInput }]
-}
+ENCOUNTER PHILOSOPHY: Real-world tasks are NEVER described literally. Completing a task triggers a dungeon encounter — the task is the key that unlocks the monster's lair, not the battle itself. A 100xp task spawns a minor creature (goblin, trap). A 200xp task spawns a mid-tier threat (ogre, cursed merchant). A 300xp+ task spawns a boss. The task's domain suggests the monster — writing tasks summon ink-wraiths and word-vampires; coding tasks spawn logic demons and mechanical golems; social tasks bring scheming nobles and silver-tongued devils; physical tasks bring beasts and brutes. Dice determine outcomes honestly — the player can take damage, lose, or die. Death is a valid outcome. Never guarantee survival.
+
+COMPONENT PROTOCOL: You embed UI components in your prose by writing tags. CRITICAL RULE: every opening tag MUST be immediately followed by one line of JSON, then the closing tag. No exceptions.
+
+Format — three lines exactly:
+[TAGNAME]
+{"key":"value"}
+[/TAGNAME]
+
+Never leave a tag open. Always write [/TAGNAME] on the line after the JSON.
+
+AVAILABLE TAGS:
+
+[STATS] — use at session start and after any XP or HP change:
+[STATS]
+{"hp":14,"hp_max":14,"mp":10,"mp_max":10,"xp":1830,"xp_next":670,"level":2,"title":"Apprentice Ranger","attributes":{"strength":{"score":18,"emoji":"🥊"},"intelligence":{"score":13,"emoji":"🧠"},"wisdom":{"score":14,"emoji":"🦉"},"dexterity":{"score":10,"emoji":"🎯"},"constitution":{"score":12,"emoji":"❤️"},"charisma":{"score":11,"emoji":"🌟"}}}
+[/STATS]
+
+[SCENE] — use at session start, on /scene, on location change:
+[SCENE]
+{"location":"The Threshold","description":"A cold stone antechamber. Torchlight gutters.","mood":"ominous"}
+[/SCENE]
+
+[TASKLIST] — use on /start and /inbox, when presenting the player's challenges:
+[TASKLIST]
+{"label":"Your challenges await...","tasks":[{"id":1,"text":"Task description","priority":"A","points":100,"attribute":"🥊","contexts":["@work"],"complete":false}]}
+[/TASKLIST]
+
+[ENCOUNTER type="combat" difficulty="A"] — use when framing a task as a challenge:
+[ENCOUNTER type="combat" difficulty="A"]
+{"title":"The Dragon Awakens","description":"Narrative description.","attribute":"strength","stakes":"What you must do."}
+[/ENCOUNTER]
+
+[DICEROLL] — use when resolving any mechanical check:
+[DICEROLL]
+{"dice":"1d20","modifier":2,"result":14,"total":16,"dc":13,"outcome":"success","label":"Attack Roll"}
+[/DICEROLL]
+
+[AWARD] — use after task completion or encounter resolution:
+[AWARD]
+{"xp":300,"attribute":"intelligence","attribute_gain":0.3,"gold":0,"message":"Well earned."}
+[/AWARD]
+
+[SYSTEM] — use for confirmations, errors, warnings (types: confirm, error, warning, info):
+[SYSTEM]
+{"type":"confirm","message":"Task #3 marked complete."}
+[/SYSTEM]`
 
 /**
  * Parse a single SSE line and return the text delta, or null.
@@ -35,20 +73,9 @@ export function parseSSEChunk(line) {
  * @param {function} onDone - called when stream completes
  */
 export async function sendToTaskmaster(messages, system, onChunk, onDone) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-  if (!apiKey) {
-    onChunk('[SYSTEM]\n{"type":"error","message":"VITE_ANTHROPIC_API_KEY not set in .env"}\n[/SYSTEM]')
-    onDone()
-    return
-  }
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('/api/claude', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: 2048,
@@ -59,7 +86,8 @@ export async function sendToTaskmaster(messages, system, onChunk, onDone) {
   })
 
   if (!response.ok) {
-    onChunk(`[SYSTEM]\n{"type":"error","message":"API error: ${response.status}"}\n[/SYSTEM]`)
+    const errText = await response.text()
+    onChunk(`[SYSTEM]\n${JSON.stringify({ type: 'error', message: `API error ${response.status}: ${errText}` })}\n[/SYSTEM]`)
     onDone()
     return
   }
@@ -80,4 +108,33 @@ export async function sendToTaskmaster(messages, system, onChunk, onDone) {
     }
   }
   onDone()
+}
+
+export async function sendToAnythingLLM(messages, system, onChunk, onDone) {
+  const lastMessage = messages[messages.length - 1]?.content || ''
+
+  try {
+    const response = await fetch('/api/anythingllm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system,
+        messages,
+      }),
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      onChunk(`[SYSTEM]\n${JSON.stringify({ type: 'error', message: `API error ${response.status}: ${errText}` })}\n[/SYSTEM]`)
+      onDone()
+      return
+    }
+
+    const text = await response.text()
+    onChunk(text)
+    onDone()
+  } catch (e) {
+    onChunk(`[SYSTEM]\n${JSON.stringify({ type: 'error', message: `Connection error: ${e.message}` })}\n[/SYSTEM]`)
+    onDone()
+  }
 }
