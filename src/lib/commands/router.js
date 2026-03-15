@@ -33,7 +33,7 @@ export async function handleSlashCommand(input, addBlock, sessionStore) {
     case 'complete':
       return handleComplete(args, addBlock, sessionStore)
     case 'stats':
-      return handleStats(addBlock)
+      return handleStats(addBlock, sessionStore)
     case 'scene':
       return relayToTaskmaster('Describe the current scene and atmosphere.', addBlock, sessionStore)
     case 'next':
@@ -44,12 +44,19 @@ export async function handleSlashCommand(input, addBlock, sessionStore) {
       sessionStore.clear()
       addBlock({ type: 'SYSTEM', data: { type: 'confirm', message: 'Session cleared. Type /start to begin.' } })
       break
+    case 'use-claude':
+      return handleUseBackend('claude', addBlock, sessionStore)
+    case 'use-anythingllm':
+      return handleUseBackend('anythingllm', addBlock, sessionStore)
     default:
       addBlock({ type: 'SYSTEM', data: { type: 'error', message: `Unknown command: /${cmd}` } })
   }
 }
 
 async function relayToTaskmaster(message, addBlock, sessionStore) {
+  if (!get(sessionStore).initialized) {
+    sessionStore.setInitialized()
+  }
   sessionStore.addMessage({ role: 'user', content: message })
   const parser = createParser(addBlock)
   let assistantText = ''
@@ -110,17 +117,26 @@ async function handleComplete(n, addBlock, sessionStore) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'complete', n: parseInt(n) }),
     })
-    await relayToTaskmaster(`I just completed task #${n}. Resolve the encounter.`, addBlock, sessionStore)
+    await relayToTaskmaster(`Task #${n} is complete. Completing it triggers a dungeon encounter — describe the monster or obstacle that now appears (themed to the task's domain, NOT a literal description of the task itself). Roll dice to resolve the fight. The player may win, take damage, or die — outcome follows the dice. Emit [ENCOUNTER], [DICEROLL], and updated [STATS]. Award XP and loot only on success via [AWARD].`, addBlock, sessionStore)
   } catch {
     addBlock({ type: 'SYSTEM', data: { type: 'error', message: 'Failed to complete task' } })
   }
 }
 
-function handleStats(addBlock) {
+function handleStats(addBlock, sessionStore) {
+  if (!get(sessionStore).initialized) {
+    sessionStore.setInitialized()
+  }
   const data = get(character)
   if (!data) {
     addBlock({ type: 'SYSTEM', data: { type: 'warning', message: 'No character data loaded. Use /start first.' } })
     return
   }
   addBlock({ type: 'STATS', data })
+}
+
+async function handleUseBackend(backend, addBlock, sessionStore) {
+  sessionStore.setBackend(backend)
+  const name = backend === 'claude' ? 'Claude' : 'AnythingLLM'
+  addBlock({ type: 'SYSTEM', data: { type: 'confirm', message: `Switched to ${name} backend.` } })
 }
