@@ -1,18 +1,8 @@
-# Carnival
+# Dubliner
 
-Carnival is a SvelteKit-based streaming chat interface for **Taskcraft** — an AI-powered text-based RPG productivity game. It renders tagged components from the Claude API into interactive RPG-style UI elements.
+> The name stems from "The Dubliners" from James Joyce; an infamously meandering narrartive.
 
-## What is Taskcraft?
-
-Taskcraft transforms your daily tasks and productivity into an adventure. Instead of a boring todo list, you embark on quests, level up your character, earn XP, and face encounters as you complete your work. The AI (Taskmaster) narrates your progress as an immersive RPG story.
-
-### Features
-
-- **Streaming Chat Interface** — Real-time AI responses with animated text rendering
-- **Tagged Component System** — Special tags in AI responses render as interactive UI components (stats, task lists, dice rolls, encounters, awards)
-- **Slash Commands** — Use `/start`, `/stats`, `/tasks`, `/roll`, `/encounter`, and more
-- **Character Progression** — Track HP, MP, XP, level, and attributes
-- **Storybook** — Component-driven development with Storybook
+Dubliner is a SvelteKit-based streaming chat interface for AI-powered text-based chats that calls components to be woven into the chat via templates that the AI provides.
 
 ## Getting Started
 
